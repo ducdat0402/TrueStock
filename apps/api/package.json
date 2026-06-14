@@ -1,0 +1,32 @@
+{
+  "name": "@truestock/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "wrangler deploy --dry-run",
+    "deploy": "wrangler deploy --env production",
+    "lint": "echo 'API lint - to be configured'",
+    "type-check": "tsc --noEmit",
+    "db:generate": "node --env-file=.dev.vars node_modules/drizzle-kit/bin.cjs generate",
+    "db:migrate": "node --env-file=.dev.vars node_modules/drizzle-kit/bin.cjs migrate",
+    "db:push": "node --env-file=.dev.vars node_modules/drizzle-kit/bin.cjs push",
+    "db:studio": "node --env-file=.dev.vars node_modules/drizzle-kit/bin.cjs studio"
+  },
+  "dependencies": {
+    "@clerk/backend": "^3.7.0",
+    "@hono/zod-validator": "^0.8.0",
+    "@neondatabase/serverless": "^1.1.0",
+    "@truestock/types": "workspace:*",
+    "drizzle-orm": "^0.45.2",
+    "hono": "^4.12.25",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260613.1",
+    "drizzle-kit": "^0.31.10",
+    "typescript": "^5.8.3",
+    "wrangler": "^4.100.0"
+  }
+}

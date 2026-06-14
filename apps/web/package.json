@@ -1,0 +1,31 @@
+{
+  "name": "@truestock/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "deploy": "pnpm build && node ../api/node_modules/wrangler/bin/wrangler.js pages deploy dist --project-name=truestock --commit-dirty=true",
+    "lint": "echo 'Web lint - to be configured'",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@clerk/react": "^6.9.1",
+    "@truestock/types": "workspace:*",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.17.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.1",
+    "@types/node": "^25.9.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tailwindcss": "^4.3.1",
+    "typescript": "^5.8.3",
+    "vite": "^8.0.16"
+  }
+}

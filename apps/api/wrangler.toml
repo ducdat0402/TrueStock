@@ -1,0 +1,20 @@
+name = "truestock-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "development"
+
+[dev]
+port = 8787
+
+[env.production]
+name = "truestock-api"
+workers_dev = true
+vars = { ENVIRONMENT = "production", FRONTEND_URL = "https://truestock.pages.dev" }
+
+# Secrets (set once per environment):
+# wrangler secret put ANTHROPIC_API_KEY --env production
+# wrangler secret put DATABASE_URL --env production
+# wrangler secret put CLERK_SECRET_KEY --env production

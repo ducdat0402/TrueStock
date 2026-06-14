@@ -1,0 +1,25 @@
+{
+  "name": "truestock",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:push": "pnpm --filter @truestock/api db:push",
+    "deploy:secrets": "node scripts/sync-production-secrets.mjs",
+    "deploy:api": "pnpm --filter @truestock/api run deploy",
+    "deploy:web": "pnpm --filter @truestock/web run deploy",
+    "deploy:all": "pnpm deploy:api && pnpm deploy:web"
+  },
+  "devDependencies": {
+    "turbo": "^2.5.0",
+    "typescript": "^5.8.3"
+  }
+}

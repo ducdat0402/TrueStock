@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0b1f4b;
+  --color-navy-light: #1a3a6e;
+  --color-teal: #028090;
+  --color-teal-light: #02a8b8;
+  --color-teal-dark: #016974;
+  --font-sans: "Inter", "Segoe UI", system-ui, sans-serif;
+
+  --animate-fade-in: fade-in 0.45s ease-out both;
+  --animate-slide-up: slide-up 0.5s ease-out both;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply min-h-screen overflow-x-hidden bg-slate-50 text-slate-900 antialiased;
+    background-image:
+      radial-gradient(circle at 0% 0%, rgb(2 128 144 / 0.06), transparent 45%),
+      radial-gradient(circle at 100% 100%, rgb(11 31 75 / 0.05), transparent 40%);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+@layer utilities {
+  .page-enter {
+    animation: slide-up 0.5s ease-out both;
+  }
+
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm;
+  }
+
+  .card-hover {
+    @apply transition duration-200 hover:-translate-y-0.5 hover:border-teal/30 hover:shadow-md;
+  }
+}
