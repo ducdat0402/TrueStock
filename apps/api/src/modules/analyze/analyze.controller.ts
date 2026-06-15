@@ -2,8 +2,8 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import type { Env, Variables } from "../../types/env";
-import { optionalAuth } from "../../middleware/clerk-auth";
-import { AnalyzeService } from "./analyze.service";
+import { requireAuth } from "../../middleware/clerk-auth";
+import { AnalyzeService, QuotaExceededError } from "./analyze.service";
 
 const analyze = new Hono<{ Bindings: Env; Variables: Variables }>();
 
@@ -15,17 +15,34 @@ const analyzeSchema = z.object({
     .regex(/^[A-Za-z0-9]+$/, "Invalid ticker format"),
 });
 
-analyze.post("/", optionalAuth, zValidator("json", analyzeSchema), async (c) => {
+analyze.post("/", requireAuth, zValidator("json", analyzeSchema), async (c) => {
   try {
     const { ticker } = c.req.valid("json");
     const service = new AnalyzeService(c.env);
-    const result = await service.analyze({
+    const { result, fromCache } = await service.analyze({
       ticker,
       userId: c.get("userId"),
+      userPlan: c.get("userPlan"),
     });
 
-    return c.json({ success: true, data: result });
+    return c.json({ success: true, data: result, fromCache });
   } catch (error) {
+    if (error instanceof QuotaExceededError) {
+      return c.json(
+        {
+          success: false,
+          error: `Bạn đã hết ${error.limit} lượt phân tích miễn phí hôm nay. Nâng cấp Premium để không giới hạn.`,
+          code: "QUOTA_EXCEEDED",
+          quota: {
+            used: error.used,
+            limit: error.limit,
+            remaining: 0,
+            plan: error.plan,
+          },
+        },
+        403
+      );
+    }
     const message = error instanceof Error ? error.message : "Unknown error";
     const status = message.includes("Không tìm thấy mã cổ phiếu") ? 400 : 500;
     return c.json({ success: false, error: message }, status);

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "../../db/client";
-import { users, type User } from "../../db/schema";
+import { users, type User, type UserPlan } from "../../db/schema";
 
 export class UserRepository {
   constructor(private databaseUrl: string) {}
@@ -24,5 +24,30 @@ export class UserRepository {
       .returning();
 
     return rows[0];
+  }
+
+  async updatePlan(
+    clerkId: string,
+    plan: UserPlan,
+    subscriptionId: string | null
+  ): Promise<void> {
+    await this.db
+      .update(users)
+      .set({
+        plan,
+        clerkSubscriptionId: subscriptionId,
+        planExpiresAt: plan === "premium" ? null : new Date(),
+      })
+      .where(eq(users.clerkId, clerkId));
+  }
+
+  async findByClerkId(clerkId: string): Promise<User | null> {
+    const rows = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.clerkId, clerkId))
+      .limit(1);
+
+    return rows[0] || null;
   }
 }

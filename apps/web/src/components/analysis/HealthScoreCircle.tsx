@@ -1,6 +1,7 @@
 import type { AnalysisResult } from "@truestock/types";
 import { getScoreVerdict, ScoreBadge } from "../ui/ScoreBadge";
 import { getColorClasses, getHealthScoreColor } from "./utils";
+import { WatchlistButton } from "./WatchlistButton";
 
 interface HealthScoreCircleProps {
   score: number;
@@ -76,11 +77,14 @@ export function AnalysisHeader({ result }: AnalysisHeaderProps) {
 
   return (
     <div className="px-1 text-center">
-      <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-navy/10 bg-navy/5 px-3 py-1.5 sm:px-4">
-        <span className="text-sm font-bold tracking-wide text-navy">
-          {result.ticker}
-        </span>
-        <ScoreBadge score={result.healthScore} />
+      <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+        <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-navy/10 bg-navy/5 px-3 py-1.5 sm:px-4">
+          <span className="text-sm font-bold tracking-wide text-navy">
+            {result.ticker}
+          </span>
+          <ScoreBadge score={result.healthScore} />
+        </div>
+        <WatchlistButton ticker={result.ticker} score={result.healthScore} />
       </div>
       <h1 className="mt-3 break-words text-xl font-bold leading-snug text-navy sm:mt-4 sm:text-2xl md:text-3xl">
         {result.companyName}

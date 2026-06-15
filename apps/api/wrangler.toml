@@ -9,12 +9,31 @@ ENVIRONMENT = "development"
 [dev]
 port = 8787
 
+# R2 bucket for PDF uploads (development)
+[[r2_buckets]]
+binding = "UPLOADS_BUCKET"
+bucket_name = "truestock-uploads-dev"
+
 [env.production]
 name = "truestock-api"
 workers_dev = true
 vars = { ENVIRONMENT = "production", FRONTEND_URL = "https://truestock.pages.dev" }
 
+# Run Worker near Anthropic API (avoid HKG colo geo-block)
+[env.production.placement]
+hostname = "api.anthropic.com"
+
+# R2 bucket for PDF uploads (production)
+[[env.production.r2_buckets]]
+binding = "UPLOADS_BUCKET"
+bucket_name = "truestock-uploads"
+
+# Cron trigger for watchlist check (8:00 AM Vietnam time = 1:00 AM UTC)
+[env.production.triggers]
+crons = ["0 1 * * *"]
+
 # Secrets (set once per environment):
 # wrangler secret put ANTHROPIC_API_KEY --env production
 # wrangler secret put DATABASE_URL --env production
 # wrangler secret put CLERK_SECRET_KEY --env production
+# wrangler secret put CLERK_WEBHOOK_SECRET --env production

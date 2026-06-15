@@ -1,5 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "@clerk/react";
 import { AuthButtons } from "../auth/AuthButtons";
+import { useAlerts } from "../../hooks/useAlerts";
 
 function NavLink({ to, label }: { to: string; label: string }) {
   const location = useLocation();
@@ -18,6 +20,26 @@ function NavLink({ to, label }: { to: string; label: string }) {
       }`}
     >
       {label}
+    </Link>
+  );
+}
+
+function NotificationBadge() {
+  const { isSignedIn } = useAuth();
+  const { unreadCount } = useAlerts();
+
+  if (!isSignedIn || unreadCount === 0) return null;
+
+  return (
+    <Link
+      to="/dashboard"
+      className="relative flex h-8 w-8 items-center justify-center rounded-lg text-white/75 transition hover:bg-white/10 hover:text-white"
+      title={`${unreadCount} thông báo chưa đọc`}
+    >
+      <span className="text-lg">🔔</span>
+      <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+        {unreadCount > 9 ? "9+" : unreadCount}
+      </span>
     </Link>
   );
 }
@@ -42,9 +64,11 @@ export function AppLayout() {
           <nav className="flex w-full items-center justify-between gap-1 overflow-x-auto pb-0.5 sm:w-auto sm:justify-end sm:gap-2 sm:overflow-visible sm:pb-0">
             <div className="flex items-center gap-1 sm:gap-2">
               <NavLink to="/" label="Trang chủ" />
+              <NavLink to="/pricing" label="Bảng giá" />
               <NavLink to="/dashboard" label="Dashboard" />
             </div>
-            <div className="shrink-0 border-l border-white/15 pl-2 sm:pl-3">
+            <div className="flex shrink-0 items-center gap-2 border-l border-white/15 pl-2 sm:gap-3 sm:pl-3">
+              <NotificationBadge />
               <AuthButtons />
             </div>
           </nav>

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { SignInButton } from "@clerk/react";
+import { QuotaBanner } from "../components/billing/QuotaBanner";
 import { FeatureCards } from "../components/home/FeatureCards";
 import { HeroSection } from "../components/home/HeroSection";
 import { PopularTickers } from "../components/home/PopularTickers";
@@ -19,10 +20,22 @@ export function HomePage() {
 
   return (
     <div className="space-y-8 sm:space-y-10">
+      <QuotaBanner />
+
       <HeroSection>
         <SearchBox variant="hero" />
         <div className="mt-5 sm:mt-6">
           <PopularTickers variant="hero" />
+        </div>
+        <div className="mt-4 text-center">
+          <Link
+            to="/compare"
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-teal"
+          >
+            <span>⚖️</span>
+            <span>So sánh nhiều mã cổ phiếu</span>
+            <span>→</span>
+          </Link>
         </div>
       </HeroSection>
 

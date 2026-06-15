@@ -6,7 +6,7 @@ import { useAnalysis } from "../hooks/useAnalysis";
 
 export function AnalyzePage() {
   const { ticker } = useParams<{ ticker: string }>();
-  const { data, loading, error, retry } = useAnalysis(ticker);
+  const { data, loading, error, errorType, quotaInfo, retry } = useAnalysis(ticker);
 
   if (!ticker) {
     return <AnalysisError message="Không tìm thấy mã cổ phiếu trong URL" />;
@@ -21,7 +21,9 @@ export function AnalyzePage() {
       <AnalysisError
         message={error ?? "Không nhận được kết quả phân tích"}
         ticker={ticker}
-        onRetry={retry}
+        onRetry={errorType === "generic" ? retry : undefined}
+        errorType={errorType}
+        quotaInfo={quotaInfo}
       />
     );
   }

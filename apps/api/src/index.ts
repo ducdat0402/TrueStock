@@ -5,7 +5,15 @@ import type { Env, Variables } from "./types/env";
 import { requestId, errorHandler } from "./middleware";
 import { health } from "./modules/health";
 import { analyze } from "./modules/analyze";
+import { compare } from "./modules/compare";
 import { history } from "./modules/history";
+import { watchlistController } from "./modules/watchlist";
+import { alertsController } from "./modules/alerts";
+import { meController } from "./modules/me";
+import { billingController } from "./modules/billing";
+import { uploadController } from "./modules/upload";
+import { b2bController } from "./modules/b2b";
+import { runWatchlistCheck } from "./jobs/watchlist-check.job";
 
 const LOCAL_ORIGINS = ["http://localhost:5173", "http://localhost:3000"];
 
@@ -52,7 +60,16 @@ app.get("/", (c) => {
 // Mount routes
 app.route("/health", health);
 app.route("/api/analyze", analyze);
+app.route("/api/compare", compare);
 app.route("/api/history", history);
+app.route("/api/watchlist", watchlistController);
+app.route("/api/alerts", alertsController);
+app.route("/api/me", meController);
+app.route("/api/webhooks", billingController);
+app.route("/api/upload", uploadController);
+
+// B2B API routes (versioned)
+app.route("/v1", b2bController);
 
 // 404 handler
 app.notFound((c) => {
@@ -65,4 +82,26 @@ app.notFound((c) => {
   );
 });
 
-export default app;
+// Cloudflare Workers scheduled handler for cron jobs
+const scheduled = async (
+  _event: ScheduledEvent,
+  env: Env,
+  ctx: ExecutionContext
+) => {
+  ctx.waitUntil(
+    runWatchlistCheck({
+      DATABASE_URL: env.DATABASE_URL,
+      RESEND_API_KEY: env.RESEND_API_KEY,
+      FRONTEND_URL: env.FRONTEND_URL,
+    }).then((result) => {
+      console.log(
+        `Watchlist check completed: ${result.checked} items checked, ${result.alerts} alerts created, ${result.emails} emails sent`
+      );
+    })
+  );
+};
+
+export default {
+  fetch: app.fetch,
+  scheduled,
+};

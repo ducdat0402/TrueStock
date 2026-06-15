@@ -32,8 +32,3 @@ export function getHealthScoreColor(score: number): SubScore["color"] {
   if (score >= 5) return "yellow";
   return "red";
 }
-
-export function truncateText(text: string, maxLength = 120): string {
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength).trim()}…`;
-}

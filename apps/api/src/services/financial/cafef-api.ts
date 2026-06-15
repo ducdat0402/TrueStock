@@ -1,5 +1,6 @@
 const CAFEF_BASE_URL = "https://m.cafef.vn/du-lieu/Ajax/PageNew/";
 const REPORT_TYPE_ANNUAL = "NAM";
+const REPORT_TYPE_QUARTERLY = "QUY";
 
 const CAFEF_HEADERS = {
   Accept: "application/json",
@@ -137,3 +138,29 @@ export function getIndicatorValue(
   const item = indicators.find((i) => i.Code === code);
   return parseNumber(item?.Value);
 }
+
+// Quarterly report fetching functions
+export async function fetchQuarterlyFinanceReport(
+  ticker: string,
+  type: 1 | 2,
+  endYear: number,
+  totalRow = 4
+): Promise<CafeFFinanceReportData | null> {
+  const symbol = ticker.toUpperCase();
+  return cafefFetch<CafeFFinanceReportData>(
+    `FinanceReport.ashx?Type=${type}&Symbol=${symbol}&TotalRow=${totalRow}&EndDate=${endYear}&ReportType=${REPORT_TYPE_QUARTERLY}&Sort=DESC`
+  );
+}
+
+export async function fetchQuarterlyRatioHistory(
+  ticker: string,
+  endYear: number,
+  totalRow = 4
+): Promise<CafeFRatioHistoryData | null> {
+  const symbol = ticker.toUpperCase();
+  return cafefFetch<CafeFRatioHistoryData>(
+    `GetDataChiSoTaiChinh.ashx?Symbol=${symbol}&TotalRow=${totalRow}&EndDate=${endYear}&ReportType=${REPORT_TYPE_QUARTERLY}&Sort=DESC`
+  );
+}
+
+export type { CafeFReportPeriod, CafeFRatioPeriod, CafeFMetric };

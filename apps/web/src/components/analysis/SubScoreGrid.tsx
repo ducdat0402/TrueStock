@@ -1,5 +1,6 @@
+import { useState } from "react";
 import type { PlainAnswers, SubScore, SubScores } from "@truestock/types";
-import { getColorClasses, truncateText } from "./utils";
+import { getColorClasses } from "./utils";
 
 const SUB_SCORE_ICONS: Record<keyof SubScores, string> = {
   profitability: "💰",
@@ -16,11 +17,13 @@ interface SubScoreCardProps {
 }
 
 function SubScoreCard({ title, subScore, explanation, icon }: SubScoreCardProps) {
+  const [expanded, setExpanded] = useState(false);
   const colors = getColorClasses(subScore.color);
   const barWidth = `${subScore.score * 10}%`;
+  const isLong = explanation.length > 160;
 
   return (
-    <div className={`card card-hover border-t-4 p-4 sm:p-5 ${colors.border}`}>
+    <div className={`card card-hover flex flex-col border-t-4 p-4 sm:p-5 ${colors.border}`}>
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex min-w-0 items-center gap-2">
           <span className="text-lg">{icon}</span>
@@ -45,9 +48,24 @@ function SubScoreCard({ title, subScore, explanation, icon }: SubScoreCardProps)
         />
       </div>
 
-      <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:mt-4">
-        {truncateText(explanation, 140)}
+      <p
+        className={`mt-3 text-sm leading-relaxed text-slate-600 sm:mt-4 ${
+          !expanded && isLong ? "line-clamp-3" : ""
+        }`}
+      >
+        {explanation}
       </p>
+
+      {isLong && (
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          className="mt-2 w-fit text-sm font-semibold text-teal transition hover:text-teal-dark"
+          aria-expanded={expanded}
+        >
+          {expanded ? "Thu gọn" : "Xem thêm"}
+        </button>
+      )}
     </div>
   );
 }

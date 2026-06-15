@@ -96,6 +96,11 @@ export class ClaudeService {
 
     if (!response.ok) {
       const errorBody = await response.text();
+      if (response.status === 403) {
+        throw new Error(
+          "Claude API từ chối yêu cầu (403). Có thể do vùng data center Cloudflare bị chặn — đang thử route lại."
+        );
+      }
       throw new Error(`Claude API error (${response.status}): ${errorBody}`);
     }
 

@@ -1,4 +1,5 @@
 import { useAuth, SignInButton, SignUpButton, UserButton } from "@clerk/react";
+import { PlanBadge } from "../billing/PlanBadge";
 
 export function AuthButtons() {
   const { isSignedIn, isLoaded } = useAuth();
@@ -9,13 +10,16 @@ export function AuthButtons() {
 
   if (isSignedIn) {
     return (
-      <UserButton
-        appearance={{
-          elements: {
-            avatarBox: "h-8 w-8 ring-2 ring-white/20",
-          },
-        }}
-      />
+      <div className="flex items-center gap-2">
+        <PlanBadge />
+        <UserButton
+          appearance={{
+            elements: {
+              avatarBox: "h-8 w-8 ring-2 ring-white/20",
+            },
+          }}
+        />
+      </div>
     );
   }
 
